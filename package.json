@@ -1,0 +1,19 @@
+{
+  "name": "music-library-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesWoodhead1/music-library-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamesWoodhead1/music-library-api/issues"
+  },
+  "homepage": "https://github.com/JamesWoodhead1/music-library-api#readme"
+}
