@@ -34,4 +34,53 @@ describe('/artists', () => {
             expect(insertedArtistRecords.genre).to.equal('Ska');
         });
     });
+    describe('with artists in the database', () => {
+        let artists;
+        beforeEach((done) => {
+            Promise.all([
+                Artist.create({ name: 'Streetlight Manifesto', genre: 'Ska' }),
+                Artist.create({ name: 'The Skints', genre: 'Dub Reggae' }),
+                Artist.create({ name: 'NOFX', genre: 'Punk' }),
+            ]).then((documents) => {
+                artists = documents;
+                done();
+            });
+        });
+        describe('GET /artists', () => {
+            it('gets all artist records', (done) => {
+                request(app).get('/artists').then((res) => {
+                    expect(res.status).to.equal(200);
+                    expect(res.body.length).to.equal(3);
+                    res.body.forEach((artist) => {
+                        const expected = artists.find((a) => a.id === artist.id);
+                        expect(artist.name).to.equal(expected.name);
+                        expect(artist.genre).to.equal(expected.genre);
+                    });
+                    done();
+                }).catch(error => done(error));
+            });
+        });
+        describe('GET /artists/:artistId', () => {
+            it('gets artist record by Id', (done) => {
+                const artist = artists[0];
+                request(app)
+                    .get(`/artists/${artist.id}`)
+                    .then((res) => {
+                        expect(res.status).to.equal(200);
+                        expect(res.body.name).to.equal(artist.name);
+                        expect(res.body.genre).to.equal(artist.genre);
+                        done();
+                }).catch(error => done(error));
+            });
+            it('returns a 404 if the artist does not exist', (done) => {
+                request(app)
+                    .get('/artists/12345')
+                    .then((res) => {
+                        expect(res.status).to.equal(404);
+                        expect(res.body.error).to.equal('The artist could not be found.');
+                        done();
+                    });
+            });
+        });
+    });
 });
