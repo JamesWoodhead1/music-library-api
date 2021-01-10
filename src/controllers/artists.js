@@ -31,3 +31,14 @@ exports.update = (req, res) => {
         }
     });
 };
+
+exports.deleteArtist = (req, res) => {
+    const { artistId } = req.params;
+    Artist.destroy({ where: { id: artistId } }).then((rowsUpdated) => {
+        if(!rowsUpdated) {
+            res.status(404).json({ error: 'The artist could not be found.' });
+        } else {
+            res.status(204).json(rowsUpdated)
+        }
+    });
+};
