@@ -82,5 +82,43 @@ describe('/artists', () => {
                     });
             });
         });
+        describe('PATCH /artists/:Id', () => {
+            it('updates artist genre by id', (done) => {
+                const artist = artists[0];
+                request(app)
+                    .patch(`/artists/${artist.id}`)
+                    .send({ genre: 'Ska Punk' })
+                    .then((res) => {
+                        expect(res.status).to.equal(200);
+                        Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
+                            expect(updatedArtist.genre).to.equal('Ska Punk');
+                            done();
+                        });
+                    }).catch(error => done(error));
+            });
+            it('updates artist name by id', (done) => {
+                const artist = artists[0];
+                request(app)
+                    .patch(`/artists/${artist.id}`)
+                    .send({ name: 'Less Than Jake' })
+                    .then((res) => {
+                        expect(res.status).to.equal(200);
+                        Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
+                            expect(updatedArtist.name).to.equal('Less Than Jake');
+                            done();
+                        });
+                    }).catch(error => done(error));
+            });
+            it('returns a 404 if the artist does not exist', (done) => {
+                request(app)
+                    .patch('/artists/6789')
+                    .send({ name: 'Reel Big Fish' })
+                    .then((res) => {
+                        expect(res.status).to.equal(404);
+                        expect(res.body.error).to.equal('The artist could not be found.');
+                        done();
+                    });
+            });
+        });
     });
 });
